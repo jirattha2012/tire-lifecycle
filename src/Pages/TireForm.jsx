@@ -87,7 +87,7 @@ export default function TireForm() {
                     variant={form[field] === i ? "filled" : "outlined"}
                     color={form[field] === i ? "primary" : "default"}
                     onClick={() => handleChange(field, i)}
-                    sx={{ cursor: "pointer", ml: 1, width: '20vh', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", p: 2 }}
+                    sx={{ cursor: "pointer", ml: 1, width: '30vh', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", p: 1 }}
                 />
             ))}
         </Stack>
@@ -99,12 +99,16 @@ export default function TireForm() {
         <Box maxWidth={600} mx="auto" p={3}>
             <Box mb={3}>
                 <Typography variant="h6" fontWeight={500}>
-                    ระบบประเมินอายุการใช้งานยาง
+                    ระบบประเมินอายุการใช้งานยาง 𖥕 ×͜×
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    กรอกข้อมูลให้ครบเพื่อคำนวณระยะเวลาที่เหลือของยาง
+                    กรอกข้อมูลให้ครบเพื่อคำนวณระยะเวลาที่เหลือของยาง 🏁 
                 </Typography>
             </Box>
+
+            <div>
+                <img src="https://www.pngarts.com/files/4/Lightning-McQueen-Disney-Cars-Transparent-Images.png" alt="" style={{ width: '200px', height: '70px', position: 'absolute', left: '0px', top: '180px' }} />
+            </div>
 
             {/* ข้อมูลการใช้งาน */}
             <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> ข้อมูลการใช้งาน </span></Typography>}>
@@ -200,11 +204,11 @@ export default function TireForm() {
             </SectionCard>
 
             <Box display="flex" gap={4} width="100%">
-                <Button variant="outlined" sx={{ width: '12vh', borderRadius: '8px', mr: 2 }} onClick={() => setForm({ mileage: "", tread: 8.5, speed: "", braking: 0, road: 0, load: 0, rubberCondition: 0, crackLevel: 0, bulge: 0, damage: 0, age: "", kmPerYear: 20000 })}>
+                <Button variant="outlined" sx={{ width: '18vh', borderRadius: '8px', mr: 2 }} onClick={() => setForm({ mileage: "", tread: 8.5, speed: "", braking: 0, road: 0, load: 0, rubberCondition: 0, crackLevel: 0, bulge: 0, damage: 0, age: "", kmPerYear: 20000 })}>
                     ล้างข้อมูล
                 </Button>
             
-                <Button variant="contained" sx={{ width: '12vh', borderRadius: '8px' }} onClick={handleSubmit} disableElevation>
+                <Button variant="contained" sx={{ width: '18vh', borderRadius: '8px' }} onClick={handleSubmit} disableElevation>
                     คำนวณ
                 </Button>
             </Box>
