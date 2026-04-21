@@ -106,8 +106,6 @@ export default function TireForm() {
                 </Typography>
             </Box>
 
-            {/* <div><img src="https://www.pngarts.com/files/4/Lightning-McQueen-Disney-Cars-Transparent-Images.png" alt="" style={{ width: '200px', height: '70px', position: 'absolute', left: '0px', top: '180px' }} /></div> */}
-
             {/* ข้อมูลการใช้งาน */}
             <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> ข้อมูลการใช้งาน </span></Typography>}>
                 <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
