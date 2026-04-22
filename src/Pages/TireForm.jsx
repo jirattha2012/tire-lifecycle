@@ -5,6 +5,8 @@ import {
     Box, Typography, TextField, Slider, Button,
     Chip, Stack, Paper, Divider, InputAdornment, MenuItem
 } from "@mui/material";
+import SectionCard from '../components/SectionCard'
+import ChipField from '../components/ChipField'
 
 // Mock Data
 const chipOptions = {
@@ -22,9 +24,9 @@ export default function TireForm() {
     const navigate = useNavigate();
     const [touched, setTouched] = useState({});
     const [form, setForm] = useState({
-        mileage: 0,    // ระยะทาง
+        mileage: "",    // ระยะทาง
         tread: 8.5,     // ดอกยาง
-        speed: 0,      // ความเร็ว
+        speed: "",      // ความเร็ว
         braking: 0,     // เบรก
         road: 0,
         load: 0,
@@ -32,9 +34,9 @@ export default function TireForm() {
         crackLevel: 0,
         bulge: 0,
         damage: 0,
-        age: 0,
+        age: "",
         ageMonth: 0,
-        kmPerYear: 20000,
+        kmPerYear: "",
     });
 
 
@@ -42,57 +44,73 @@ export default function TireForm() {
         setTouched((prev) => ({ ...prev, [field]: true }));
     };
 
-    const isError = (field) => touched[field] && (form[field] === "" || form[field] === 0);
+    const isError = (field) => {
+        if (!touched[field]) return false;
+        const value = form[field];
+        return value === "" || value === null || value === undefined;
+        // ไม่ต้องเช็ค === 0 เพราะ 0 เป็นค่าที่ valid
+    };
 
     const handleChange = (field, value) => {
-        console.log('value ==> ', value)
-        setForm((prev) => ({ ...prev, [field]: value }));
+        console.log('value ==> ', value);
+        
+        // ถ้าเป็น number field ให้แปลงเป็น number ก่อน
+        const numberFields = ["mileage", "kmPerYear", "age", "speed"];
+        const finalValue = numberFields.includes(field) 
+            ? (value === "" ? "" : Number(value))  // เก็บ "" ถ้าว่าง, แปลงเป็น number ถ้ามีค่า
+            : value;
+        
+        setForm((prev) => ({ ...prev, [field]: finalValue }));
     };
 
     const handleSubmit = () => {
         const requiredFields = ["mileage", "kmPerYear", "age", "speed"];
         
-        // Mark ทุก field ว่า touched แล้ว
         setTouched(Object.fromEntries(requiredFields.map((f) => [f, true])));
 
-        const hasError = requiredFields.some((f) => form[f] === "" || form[f] === 0);
-        if (hasError) return;  // หยุดถ้ายังมี field ว่าง
+        // เช็คว่าว่างหรือเป็น 0 (ถ้าไม่ต้องการให้กรอก 0)
+        const hasError = requiredFields.some((f) => {
+            const val = form[f];
+            return val === "" || val === null || val === undefined || val <= 0;
+        });
+        
+        if (hasError) return;
 
         calculate(form);
         localStorage.setItem("tireData", JSON.stringify(form));
         navigate("/result");
     };
 
-    const SectionCard = ({ title, children }) => (
-        <Paper variant="outlined" sx={{ p: 3, borderRadius: 3, mb: 2 }}>
-        <Typography variant="overline" color="text.secondary" fontWeight={600}>
-            {title}
-        </Typography>
-        <Divider sx={{ my: 1.5 }} />
-        {children}
-        </Paper>
-    );
+    // const SectionCard = ({ title, children }) => (
+    //     <Paper variant="outlined" sx={{ p: 3, borderRadius: 3, mb: 2 }}>
+    //     <Typography variant="overline" color="text.secondary" fontWeight={600}>
+    //         {title}
+    //     </Typography>
+    //     <Divider sx={{ my: 1.5 }} />
+    //     {children}
+    //     </Paper>
+    // );
 
-    const ChipField = ({ label, field, options, sx }) => (
-    <Box mb={2} sx={sx}>
-        <Typography variant="body2" color="text.secondary" sx={{ pb: 2 }}>
-            {label}
-        </Typography>
-        
-        <Stack direction="row" flexWrap="wrap" gap={1} sx={{ display: 'flex', justifyContent: 'center'}}>
-            {options.map((opt, i) => (
-                <Chip
-                    key={opt}
-                    label={opt}
-                    variant={form[field] === i ? "filled" : "outlined"}
-                    color={form[field] === i ? "primary" : "default"}
-                    onClick={() => handleChange(field, i)}
-                    sx={{ cursor: "pointer", ml: 1, width: '30vh', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", p: 1 }}
-                />
-            ))}
-        </Stack>
-    </Box>
-  );
+    // const ChipField = ({ label, field, options, sx }) => (
+    //     <Box mb={2} sx={sx}>
+    //         <Typography variant="body2" color="text.secondary" sx={{ pb: 2 }}>
+    //             {label}
+    //         </Typography>
+            
+    //         <Stack direction="row" flexWrap="wrap" gap={1} sx={{ display: 'flex', justifyContent: 'center'}}>
+    //             {options.map((opt, i) => (
+    //                 <Chip
+    //                     key={opt}
+    //                     label={opt}
+    //                     variant={form[field] === i ? "filled" : "outlined"}
+    //                     color={form[field] === i ? "primary" : "default"}
+    //                     onClick={() => handleChange(field, i)}
+    //                     sx={{ cursor: "pointer", ml: 1, width: '30vh', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", p: 1 }}
+    //                 />
+    //             ))}
+    //         </Stack>
+    //     </Box>
+    // );
 
 
     return (
@@ -112,7 +130,7 @@ export default function TireForm() {
                     <TextField
                         label="ระยะทางสะสม (กม.)"
                         type="number"
-                        value={form.mileage ?? ""}
+                        value={form.mileage}
                         onChange={(e) => handleChange("mileage", e.target.value)}
                         onBlur={() => handleBlur("mileage")}
                         error={isError("mileage")}
@@ -126,7 +144,7 @@ export default function TireForm() {
                     <TextField
                         label="ระยะทางต่อปี"
                         type="number"
-                        value={form.kmPerYear ?? ""}
+                        value={form.kmPerYear}
                         onChange={(e) => handleChange("kmPerYear", e.target.value)}
                         onBlur={() => handleBlur("kmPerYear")}
                         error={isError("kmPerYear")}
@@ -140,7 +158,7 @@ export default function TireForm() {
                     <TextField
                         label="ระยะเวลาใช้งาน"
                         type="number"
-                        value={form.age ?? ""}
+                        value={form.age}
                         onChange={(e) => handleChange("age", e.target.value)}
                         onBlur={() => handleBlur("age")}
                         error={isError("age")}
@@ -154,7 +172,7 @@ export default function TireForm() {
                     <TextField
                         label="ความเร็วเฉลี่ย (กม./ชม.)"
                         type="number"
-                        value={form.speed ?? ""}
+                        value={form.speed}
                         onChange={(e) => handleChange("speed", e.target.value)}
                         onBlur={() => handleBlur("speed")}
                         error={isError("speed")}
@@ -173,30 +191,31 @@ export default function TireForm() {
                     <Typography variant="body2" color="text.secondary" mb={1}>
                         ดอกยางเฉลี่ย (4 ล้อ): {form.tread} มม.
                     </Typography>
+
                     <Slider
-                        min={0} max={10} step={0.5}
+                        min={0} max={8} step={0.5}
                         value={form.tread}
                         onChange={(_, val) => handleChange("tread", val)}
                         marks={[
-                        { value: 0, label: "0" },
-                        { value: 1.6, label: "1.6" },
-                        { value: 10, label: "10" },
+                            { value: 0, label: "0" },
+                            { value: 1.6, label: "1.6" },
+                            { value: 8, label: "8" },
                         ]}
                         valueLabelDisplay="auto"
                     />
                 </Box>
 
-                <ChipField label="สภาพเนื้อยาง" field="rubberCondition" options={chipOptions.rubberCondition} sx={{ mt: 2 }} />
-                <ChipField label="รอยแตกลายงา" field="crackLevel" options={chipOptions.crackLevel} sx={{ mt: 2 }} />
-                <ChipField label="การบวม/พอง" field="bulge" options={chipOptions.bulge} sx={{ mt: 2 }} />
-                <ChipField label="บาด/ตำ/ฉีก/ขาด" field="damage" options={chipOptions.damage} sx={{ mt: 2 }} />
+                <ChipField label="สภาพเนื้อยาง" field="rubberCondition" options={chipOptions.rubberCondition} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label="รอยแตกลายงา" field="crackLevel" options={chipOptions.crackLevel} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label="การบวม/พอง" field="bulge" options={chipOptions.bulge} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label="บาด/ตำ/ฉีก/ขาด" field="damage" options={chipOptions.damage} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
             </SectionCard>
 
             {/* ปัจจัยการใช้งาน */}
             <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}>ปัจจัยการใช้งาน</span></Typography>}>
-                <ChipField label="พฤติกรรมการเบรค" field="braking" options={chipOptions.braking} sx={{ mt: 2}} />
-                <ChipField label="สภาพถนน" field="road" options={chipOptions.road} sx={{ mt: 2}} />
-                <ChipField label="การบรรทุก" field="load" options={chipOptions.load} sx={{ mt: 2}} />
+                <ChipField label="พฤติกรรมการเบรค" field="braking" options={chipOptions.braking} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label="สภาพถนน" field="road" options={chipOptions.road} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label="การบรรทุก" field="load" options={chipOptions.load} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
             </SectionCard>
 
             <Box display="flex" gap={4} width="100%">
