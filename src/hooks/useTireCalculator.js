@@ -1,12 +1,5 @@
+// useTireCalculator.js
 import { useState } from "react";
-import { normalize } from "../utils/normalize";
-import {
-  calculateWearRate,
-  adjustWearRate,
-  calculateRULkm,
-  calculateRULyear
-} from "../utils/calculation";
-import { getRiskLevel } from "../utils/decision";
 
 export const useTireCalculator = () => {
   const [result, setResult] = useState(null);
@@ -14,7 +7,8 @@ export const useTireCalculator = () => {
   const calculate = (data) => {
     const {
       mileage,
-      tread,
+      treadStart,
+      treadCurrent,
       speed,
       braking,
       road,
@@ -26,22 +20,32 @@ export const useTireCalculator = () => {
       age
     } = data;
 
-    const TREAD_START = 8.5;
+    // 🛑 กัน error (สำคัญ)
+    if (!mileage || !age || mileage <= 0 || age <= 0) return;
+
     const alpha = 0.4;
 
-    // ✅ map severity (ต้องแก้ให้ตรง index ของ chip)
-    const BS = [0.3, 0.8][braking];
-    const RS = [0.3, 0.6, 1.0][road];
-    const SS = [0.3, 0.6, 1.0][speed];
-    const LS = [0.4, 0.9][load];
+    // ✅ helper
+    const clamp = (v, min = 0, max = 1) =>
+      Math.min(max, Math.max(min, v));
 
-    // 1. Mileage per year
+    // -------------------------
+    // 1. Usage Scores
+    // -------------------------
+    const BS = [0.3, 0.8][braking] ?? 0.3;
+    const RS = [0.3, 0.6, 1.0][road] ?? 0.3;
+    const SS = [0.3, 0.6, 1.0][speed] ?? 0.3;
+    const LS = [0.4, 0.9][load] ?? 0.4;
+
+    // -------------------------
+    // 2. Mileage
+    // -------------------------
     const mileageYear = mileage / age;
+    const MR = clamp(mileageYear / 30000);
 
-    // 2. MR
-    const MR = mileageYear / 30000;
-
-    // 3. UF
+    // -------------------------
+    // 3. Usage Factor
+    // -------------------------
     const UF =
       0.25 * BS +
       0.3 * RS +
@@ -49,40 +53,87 @@ export const useTireCalculator = () => {
       0.1 * SS +
       0.15 * LS;
 
-    // 4. WR
-    const WRbase = (TREAD_START - tread) / mileage;
-    const WRadj = WRbase * (1 + alpha * UF);
+    // -------------------------
+    // 4. Wear Rate
+    // -------------------------
+    const WRbase =
+      (treadStart - treadCurrent) / mileage;
 
+    // damage index
+    const damageIndex =
+      treadStart > 0
+        ? 1 - treadCurrent / treadStart
+        : 0;
+
+    // ✅ เพิ่ม realism
+    const damageFactor = 1 + 0.5 * damageIndex;
+
+    const conditionFactor =
+      1 +
+      0.3 * crackLevel +
+      0.5 * bulge +
+      0.7 * damage;
+
+    const WRadj =
+      WRbase *
+      (1 + alpha * UF) *
+      damageFactor *
+      conditionFactor;
+
+    // -------------------------
     // 5. RUL
-    const treadRemaining = tread - 1.6;
-    const RULkm = treadRemaining / WRadj;
-    const RULyear = RULkm / mileageYear;
+    // -------------------------
+    const treadRemaining = Math.max(
+      0,
+      treadCurrent - 1.6
+    );
 
+    const RULkm =
+      WRadj > 0 ? treadRemaining / WRadj : 0;
+
+    const RULyear =
+      mileageYear > 0 ? RULkm / mileageYear : 0;
+
+    // -------------------------
     // 6. Index
-    const ageIndex = age / 5;
-    const damageIndex = 1 - (tread / TREAD_START);
+    // -------------------------
+    const ageIndex = clamp(age / 5);
 
-    // 7. Component Score
     const CS =
       0.35 * UF +
       0.2 * ageIndex +
       0.45 * damageIndex;
 
-    // 8. Final RUL (limit อายุ)
-    const finalRULkm = Math.min(RULkm, (5 - age) * mileageYear);
-    const finalRULyear = finalRULkm / mileageYear;
+    // -------------------------
+    // 7. จำกัดอายุยาง
+    // -------------------------
+    const remainingYears = Math.max(0, 5 - age);
 
-    // ✅ 9. Risk - เพิ่มเงื่อนไขตรวจสอบสภาพยางร้ายแรง
+    const finalRULkm = Math.min(
+      RULkm,
+      remainingYears * mileageYear
+    );
+
+    const finalRULyear =
+      mileageYear > 0
+        ? finalRULkm / mileageYear
+        : 0;
+
+    // -------------------------
+    // 8. Risk
+    // -------------------------
     let risk = "SAFE";
-    
-    // 🔴 ตรวจสภาพยางที่ร้ายแรง
-    // แข็ง/ตาย || แตกชัดเจน || พบรอยบวม || แผลลึก/เห็นโครงสร้าง
-    const isCriticalCondition = (rubberCondition === 2 || crackLevel === 2 || bulge === 1 || damage === 2)
+
+    const isCriticalCondition =
+      rubberCondition === 2 ||
+      crackLevel === 2 ||
+      bulge === 1 ||
+      damage === 2;
 
     if (
-      tread <= 1.6 ||
+      treadCurrent <= 1.6 ||
       age > 5 ||
-      isCriticalCondition  // ✅ เพิ่มเงื่อนไขนี้
+      isCriticalCondition
     ) {
       risk = "REPLACE NOW";
     } else if (CS > 0.7) {
@@ -91,7 +142,11 @@ export const useTireCalculator = () => {
       risk = "WARNING";
     }
 
+    // -------------------------
+    // 9. Result
+    // -------------------------
     setResult({
+      mileageYear,
       UF,
       WRbase,
       WRadj,
@@ -101,7 +156,7 @@ export const useTireCalculator = () => {
       finalRULyear,
       CS,
       risk,
-      isCriticalCondition  // ✅ ส่งค่านี้ไปด้วยถ้าต้องการแสดงใน Result
+      isCriticalCondition
     });
   };
 

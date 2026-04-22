@@ -6,7 +6,7 @@ const ChipField = ({ label, field, options, form, handleChange, sx }) => (
             {label}
         </Typography>
         
-        <Stack direction="row" flexWrap="wrap" gap={1} justifyContent="center">
+        <Stack direction="row" flexWrap="wrap" gap={1} justifyContent="center" sx={{display: 'flex', justifyContent: 'center'}}>
             {options.map((opt, i) => (
                 <Chip
                     key={opt}
@@ -17,7 +17,7 @@ const ChipField = ({ label, field, options, form, handleChange, sx }) => (
                     sx={{
                         cursor: "pointer",
                         ml: 1,
-                        width: '30vh',
+                        width: '25vh',
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
