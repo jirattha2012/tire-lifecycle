@@ -104,15 +104,15 @@ export default function TireForm() {
             {/* ข้อมูลการใช้งาน */}
             <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> ข้อมูลการใช้งาน </span></Typography>}>
                 <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
-                    {/* TreadStart -> treadStart */}
+                    {/* TreadCurrent */}
                     {/* <Box mb={2}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
-                            ดอกยางเฉลี่ย (4 ล้อ): {form.treadStart} มม. (เริ่มต้น)
+                            ดอกยางเฉลี่ย (4 ล้อ): {form.treadCurrent} มม. (ปัจจุบัน)
                         </Typography>
                         <Slider
-                            min={0} max={8.5} step={0.5}
-                            value={form.treadStart}
-                            onChange={(_, val) => handleChange("treadStart", val)}
+                            min={0} max={8} step={0.5}
+                            value={form.treadCurrent}
+                            onChange={(_, val) => handleChange("treadCurrent", val)}
                             marks={[
                                 { value: 0, label: "0" },
                                 { value: 1.6, label: "1.6" },
@@ -122,15 +122,72 @@ export default function TireForm() {
                         />
                     </Box> */}
 
-                    {/* TreadCurrent -> treadCurrent */}
+                    <Box mb={2} sx={{pb: 2}}>
+                        <Typography variant="body2" color="text.secondary" mb={1}>
+                            ดอกยางเฉลี่ย (4 ล้อ) / มม.
+                        </Typography>
+                    </Box>
+
+                    {/* ล้อหน้าซ้าย */}
                     <Box mb={2}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
-                            ดอกยางเฉลี่ย (4 ล้อ): {form.treadCurrent} มม. (ปัจจุบัน)
+                            ล้อหน้าซ้าย: {form.treadFrontLeft ?? 0} มม.
                         </Typography>
                         <Slider
-                            min={0} max={8.5} step={0.5}
-                            value={form.treadCurrent}
-                            onChange={(_, val) => handleChange("treadCurrent", val)}
+                            min={0} max={8} step={0.5}
+                            value={form.treadFrontLeft}
+                            onChange={(_, val) => handleChange("treadFrontLeft", val)}
+                            marks={[
+                                { value: 0, label: "0" },
+                                { value: 1.6, label: "1.6" },
+                                { value: 8, label: "8" },
+                            ]}
+                            valueLabelDisplay="auto"
+                        />
+                    </Box>
+                    {/* ล้อหน้าขวา */}
+                    <Box mb={2}>
+                        <Typography variant="body2" color="text.secondary" mb={1}>
+                            ล้อหน้าขวา: {form.treadFrontRight ?? 0} มม.
+                        </Typography>
+                        <Slider
+                            min={0} max={8} step={0.5}
+                            value={form.treadFrontRight}
+                            onChange={(_, val) => handleChange("treadFrontRight", val)}
+                            marks={[
+                                { value: 0, label: "0" },
+                                { value: 1.6, label: "1.6" },
+                                { value: 8, label: "8" },
+                            ]}
+                            valueLabelDisplay="auto"
+                        />
+                    </Box>
+                    {/* ล้อหลังซ้าย */}
+                    <Box mb={2}>
+                        <Typography variant="body2" color="text.secondary" mb={1}>
+                            ล้อหลังซ้าย: {form.treadBackLeft ?? 0} มม.
+                        </Typography>
+                        <Slider
+                            min={0} max={8} step={0.5}
+                            value={form.treadBackLeft}
+                            onChange={(_, val) => handleChange("treadBackLeft", val)}
+                            marks={[
+                                { value: 0, label: "0" },
+                                { value: 1.6, label: "1.6" },
+                                { value: 8, label: "8" },
+                            ]}
+                            valueLabelDisplay="auto"
+                        />
+                    </Box>
+                    {/* ล้อหลังขวา */}
+                    <Box mb={2}>
+                        <Typography variant="body2" color="text.secondary" mb={1}>
+                            ล้อหลังขวา: {form.treadBackRight ?? 0} มม.
+                        </Typography>
+                        <Slider
+                            min={0} max={8} step={0.5}
+                            value={form.treadBackRight}
+                            onChange={(_, val) => handleChange("treadBackRight", val)}
                             marks={[
                                 { value: 0, label: "0" },
                                 { value: 1.6, label: "1.6" },
@@ -201,7 +258,7 @@ export default function TireForm() {
                 <ChipField label="การบรรทุก" field="load" options={chipOptions.load} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
             </SectionCard>
 
-            <Box display="flex" gap={4} width="100%">
+            <Box display="flex" gap={4} width="100%" sx={{ mb: 4 }}>
                 <Button 
                     variant="outlined" 
                     sx={{ width: '18vh', borderRadius: '8px', mr: 2 }} 
@@ -229,7 +286,7 @@ export default function TireForm() {
                 </Button>
             </Box>
 
-            <div style={{ padding: '4px', width: '70vh', marginTop: '4vh', marginBottom: '2vh' }}>
+            {/* <div style={{ padding: '4px', width: '70vh', marginTop: '4vh', marginBottom: '2vh' }}>
                 <div style={{textAlign: 'left', color: 'red', fontSize: '16px'}}><u> สูตรคำนวณ </u></div>
                 <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>Mileage<span style={{fontSize: '12px'}}>year</span> = Mileage<span style={{fontSize: '12px'}}>acc</span> / Tireage </p>
                 <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>• MR = Mileage<span style={{fontSize: '12px'}}>year</span> / 30,000 </p>
@@ -245,7 +302,7 @@ export default function TireForm() {
                 <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>TreadRemaining = TreadCurrent − 1.6 mm </p>
                 <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>RULkm = TreadRemaining / WRadj </p>
                 <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>RULyear = RULkm / Mileageyear </p>
-            </div>
+            </div> */}
         </Box>
     );
 }

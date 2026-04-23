@@ -23,7 +23,6 @@ export default function Result() {
         <h3>ข้อมูลที่ใช้คำนวณ</h3>
         <p>ระยะทางสะสม: {data.mileage} กม.</p>
         <p>อายุยาง: {data.age} ปี</p>
-        <p>ดอกยางเริ่มต้น: {data.treadStart} มม.</p>
         <p>ดอกยางปัจจุบัน: {data.treadCurrent} มม.</p>
       </div>
 
