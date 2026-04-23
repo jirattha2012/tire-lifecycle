@@ -56,14 +56,10 @@ export const useTireCalculator = () => {
     // -------------------------
     // 4. Wear Rate
     // -------------------------
-    const WRbase =
-      (treadStart - treadCurrent) / mileage;
+    const WRbase = (8 - treadCurrent) / mileage   // (treadStart - treadCurrent) / mileage
 
     // damage index
-    const damageIndex =
-      treadStart > 0
-        ? 1 - treadCurrent / treadStart
-        : 0;
+    const damageIndex = 8 > 0 ? 1 - 8 / treadStart : 0    // treadStart > 0 ? 1 - treadCurrent / treadStart : 0
 
     // ✅ เพิ่ม realism
     const damageFactor = 1 + 0.5 * damageIndex;

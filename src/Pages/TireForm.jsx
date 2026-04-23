@@ -105,7 +105,7 @@ export default function TireForm() {
             <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> ข้อมูลการใช้งาน </span></Typography>}>
                 <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
                     {/* TreadStart -> treadStart */}
-                    <Box mb={2}>
+                    {/* <Box mb={2}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
                             ดอกยางเฉลี่ย (4 ล้อ): {form.treadStart} มม. (เริ่มต้น)
                         </Typography>
@@ -120,7 +120,7 @@ export default function TireForm() {
                             ]}
                             valueLabelDisplay="auto"
                         />
-                    </Box>
+                    </Box> */}
 
                     {/* TreadCurrent -> treadCurrent */}
                     <Box mb={2}>
@@ -187,25 +187,6 @@ export default function TireForm() {
 
             {/* สภาพยาง */}
             <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> ความเสียหาย / สภาพยาง </span></Typography>}>
-                {/* TreadStart */}
-                {/* <Box mb={2}>
-                    <Typography variant="body2" color="text.secondary" mb={1}>
-                        ดอกยางเฉลี่ย (4 ล้อ): {form.tread} มม.
-                    </Typography>
-
-                    <Slider
-                        min={0} max={8} step={0.5}
-                        value={form.tread}
-                        onChange={(_, val) => handleChange("tread", val)}
-                        marks={[
-                            { value: 0, label: "0" },
-                            { value: 1.6, label: "1.6" },
-                            { value: 8, label: "8" },
-                        ]}
-                        valueLabelDisplay="auto"
-                    />
-                </Box> */}
-
                 <ChipField label="สภาพเนื้อยาง" field="rubberCondition" options={chipOptions.rubberCondition} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
                 <ChipField label="รอยแตกลายงา" field="crackLevel" options={chipOptions.crackLevel} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
                 <ChipField label="การบวม/พอง" field="bulge" options={chipOptions.bulge} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
