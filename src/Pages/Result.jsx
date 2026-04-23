@@ -18,29 +18,36 @@ export default function Result() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>ผลการประเมิน</h2>
-      <h3>ข้อมูลที่ใช้คำนวณ</h3>
-      <p>ระยะทางสะสม: {data.mileage} กม.</p>
-      <p>อายุยาง: {data.age} ปี</p>
-      <p>ดอกยางเริ่มต้น: {data.treadStart} มม.</p>
-      <p>ดอกยางปัจจุบัน: {data.treadCurrent} มม.</p>
+      <div>
+        <h2>ผลการประเมิน</h2>
+        <h3>ข้อมูลที่ใช้คำนวณ</h3>
+        <p>ระยะทางสะสม: {data.mileage} กม.</p>
+        <p>อายุยาง: {data.age} ปี</p>
+        <p>ดอกยางเริ่มต้น: {data.treadStart} มม.</p>
+        <p>ดอกยางปัจจุบัน: {data.treadCurrent} มม.</p>
+      </div>
 
       <hr />
 
-      <h3>ผลลัพธ์</h3>
-      <p>🔹 Usage Factor (UF): {result.UF.toFixed(3)}</p>
-      <p>🔹 Wear Rate (WR adj): {result.WRadj.toExponential(3)}</p>
-      <p>🔹 ใช้ได้อีกประมาณ: <b>{result.finalRULkm.toFixed(0)} กม.</b></p>
-      <p>🔹 หรือประมาณ: <b>{result.finalRULyear.toFixed(2)} ปี</b></p>
-      <p>🔹 Component Score: {result.CS.toFixed(2)}</p>
-      <p>🔹 ความเสี่ยง: <b style={{
-          color: result.risk === "REPLACE NOW" ? "red" :
-                 result.risk === "HIGH RISK" ? "orange" :
-                 result.risk === "WARNING" ? "gold" : "green"
-        }}>
-          {result.risk}
-        </b>
-      </p>
+      <div style={{ width: '80%', margin: '0 auto',display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <h3> ผลลัพธ์ </h3>
+        <div>
+          <p style={{ width: '100%', textAlign: 'left'}}>🔹 Usage Factor (UF): {result.UF.toFixed(3)}</p>
+          <p style={{ width: '100%', textAlign: 'left'}}>🔹 Wear Rate (WR adj): {result.WRadj.toExponential(3)}</p>
+          <p style={{ width: '100%', textAlign: 'left'}}>🔹 ใช้ได้อีกประมาณ: <b>{result.finalRULkm.toFixed(0)} กม.</b></p>
+          <p style={{ width: '100%', textAlign: 'left'}}>🔹 หรือประมาณ: <b>{result.finalRULyear.toFixed(2)} ปี</b></p>
+          <p style={{ width: '100%', textAlign: 'left'}}>🔹 Component Score: {result.CS.toFixed(2)}</p>
+          <p style={{ width: '100%', textAlign: 'left'}}>🔹 ความเสี่ยง: 
+            <b style={{
+              color: result.risk === "REPLACE NOW" ? "red" :
+                    result.risk === "HIGH RISK" ? "orange" :
+                    result.risk === "WARNING" ? "gold" : "green"
+            }}>
+              {result.risk}
+            </b>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

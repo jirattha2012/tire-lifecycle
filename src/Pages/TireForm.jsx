@@ -94,10 +94,10 @@ export default function TireForm() {
         <Box maxWidth={600} mx="auto" p={3}>
             <Box mb={3}>
                 <Typography variant="h6" fontWeight={500}>
-                    ระบบประเมินอายุการใช้งานยาง 𖥕 ×͜×
+                    ระบบประเมินอายุการใช้งานยาง 𖥕
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    กรอกข้อมูลให้ครบเพื่อคำนวณระยะเวลาที่เหลือของยาง 🏁 
+                    กรอกข้อมูลให้ครบเพื่อคำนวณระยะเวลาที่เหลือของยาง  
                 </Typography>
             </Box>
 
