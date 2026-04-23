@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTireCalculator } from "../hooks/useTireCalculator";
 import { useNavigate } from "react-router-dom";
 import {
@@ -29,6 +29,10 @@ export default function TireForm() {
         mileage: "",
         treadStart: 8,   
         treadCurrent: 8, 
+        treadFrontLeft: 8, 
+        treadFrontRight: 8, 
+        treadBackLeft: 8, 
+        treadBackRight: 8, 
         speed: 0,
         braking: 0,
         road: 0,
@@ -89,6 +93,29 @@ export default function TireForm() {
         }
     };
 
+    useEffect(() => {
+        const {
+            treadFrontLeft = 0,
+            treadFrontRight = 0,
+            treadBackLeft = 0,
+            treadBackRight = 0,
+        } = form;
+
+        const avg = (
+            treadFrontLeft +
+            treadFrontRight +
+            treadBackLeft +
+            treadBackRight
+        ) / 4;
+
+        handleChange("treadCurrent", Number(avg.toFixed(2)));
+    }, [
+        form.treadFrontLeft,
+        form.treadFrontRight,
+        form.treadBackLeft,
+        form.treadBackRight
+    ]);
+
 
     return (
         <Box maxWidth={600} mx="auto" p={3}>
@@ -124,7 +151,7 @@ export default function TireForm() {
 
                     <Box mb={2} sx={{pb: 2}}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
-                            ดอกยางเฉลี่ย (4 ล้อ) / มม.
+                            ดอกยางเฉลี่ย (4 ล้อ): {form.treadCurrent} มม. (ปัจจุบัน)
                         </Typography>
                     </Box>
 
