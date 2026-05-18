@@ -7,7 +7,7 @@ export const useTireCalculator = () => {
   const calculate = (data) => {
     const {
       mileage,
-      treadStart,
+      treadStart = 8,
       treadCurrent,
       speed,
       braking,
@@ -17,142 +17,189 @@ export const useTireCalculator = () => {
       crackLevel,
       bulge,
       damage,
-      age
+      age,
     } = data;
 
-    // 🛑 กัน error (สำคัญ)
+    // 🛑 กัน error
     if (!mileage || !age || mileage <= 0 || age <= 0) return;
 
-    const alpha = 0.4;
-
-    // ✅ helper
-    const clamp = (v, min = 0, max = 1) =>
-      Math.min(max, Math.max(min, v));
+    // ✅ Helper function
+    const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
 
     // -------------------------
-    // 1. Usage Scores
+    // 1. Severity Factors (จากสูตร PDF)
     // -------------------------
-    const BS = [0.3, 0.8][braking] ?? 0.3;
-    const RS = [0.3, 0.6, 1.0][road] ?? 0.3;
-    const SS = [0.3, 0.6, 1.0][speed] ?? 0.3;
-    const LS = [0.4, 0.9][load] ?? 0.4;
+    // Braking Severity: Smooth = 0, Strong = 0.1
+    const BS = [0, 0.1][braking] ?? 0;
+
+    // Road Severity: Smooth = 0, Rough/Dusty = 0.1, Many holes = 0.2
+    const RS = [0, 0.1, 0.2][road] ?? 0;
+
+    // Speed Severity: Low(<60) = 0, Medium(80-100) = 0.05, High(>120) = 0.1
+    const SS = [0, 0.05, 0.1][speed] ?? 0;
+
+    // Load Severity: Less than 400-500kg = 0, More than 500kg = 0.1
+    const LS = [0, 0.1][load] ?? 0;
 
     // -------------------------
-    // 2. Mileage
+    // 2. Usage Factor (UF)
+    // จากสูตร PDF: UF = 1 + BS + RS + SS + LS
+    // -------------------------
+    const UF = 1 + BS + RS + SS + LS;
+
+    // -------------------------
+    // 3. Mileage per Year
     // -------------------------
     const mileageYear = mileage / age;
-    const MR = clamp(mileageYear / 30000);
 
     // -------------------------
-    // 3. Usage Factor
+    // 4. Predicted Tread (Linear Model จาก PDF)
+    // สูตร: y = 8 - 0.00009 × Mileage  (r = 0.8999)
     // -------------------------
-    const UF =
-      0.25 * BS +
-      0.3 * RS +
-      0.2 * MR +
-      0.1 * SS +
-      0.15 * LS;
+    const WEAR_RATE_COEFFICIENT = 0.00009; // มม./กม.
+    const predictedTread = treadStart - WEAR_RATE_COEFFICIENT * mileage;
 
     // -------------------------
-    // 4. Wear Rate
+    // 5. Condition Penalty (ความเสียหายของยาง)
+    // ใช้สำหรับ Component Score เท่านั้น
+    // ไม่ได้นำไปใช้ใน RULkm ตาม PDF
     // -------------------------
-    const WRbase = (8 - treadCurrent) / mileage   // (treadStart - treadCurrent) / mileage
+    let conditionPenalty = 0;
 
-    // damage index
-    const damageIndex = 8 > 0 ? 1 - 8 / treadStart : 0    // treadStart > 0 ? 1 - treadCurrent / treadStart : 0
+    // สภาพเนื้อยาง: 0=นุ่ม(0), 1=เริ่มแข็ง(0.05), 2=แข็ง/ตาย(0.15)
+    if (rubberCondition === 2) conditionPenalty += 0.15;
+    else if (rubberCondition === 1) conditionPenalty += 0.05;
 
-    // ✅ เพิ่ม realism
-    const damageFactor = 1 + 0.5 * damageIndex;
+    // รอยแตกลายงา: 0=ไม่มี(0), 1=เล็กน้อย(0.10), 2=แตกชัดเจน(0.20)
+    if (crackLevel === 2) conditionPenalty += 0.20;
+    else if (crackLevel === 1) conditionPenalty += 0.10;
 
-    const conditionFactor =
-      1 +
-      0.3 * crackLevel +
-      0.5 * bulge +
-      0.7 * damage;
+    // การบวม/พอง: 0=ไม่มี(0), 1=พบรอยบวม(0.25)
+    if (bulge === 1) conditionPenalty += 0.25;
 
-    const WRadj =
-      WRbase *
-      (1 + alpha * UF) *
-      damageFactor *
-      conditionFactor;
+    // บาด/ตำ/ฉีก/ขาด: 0=ไม่มี(0), 1=รอยตื้น(0.15), 2=แผลลึก(0.30)
+    if (damage === 2) conditionPenalty += 0.30;
+    else if (damage === 1) conditionPenalty += 0.15;
 
     // -------------------------
-    // 5. RUL
+    // 6. Remaining Useful Life (RULkm)
+    // จากสูตร PDF: RULkm = (Tread depth - 1.6) / (0.00009 × UF)
+    // ใช้ treadCurrent (ดอกยางที่วัดจริง) ไม่ใช่ predictedTread
     // -------------------------
-    const treadRemaining = Math.max(
-      0,
-      treadCurrent - 1.6
-    );
-
+    const treadRemaining = Math.max(0, treadCurrent - 1.6);
     const RULkm =
-      WRadj > 0 ? treadRemaining / WRadj : 0;
-
-    const RULyear =
-      mileageYear > 0 ? RULkm / mileageYear : 0;
+      UF > 0 ? treadRemaining / (WEAR_RATE_COEFFICIENT * UF) : 0;
 
     // -------------------------
-    // 6. Index
+    // 7. Remaining Useful Life (RULyear)
+    // จากสูตร PDF: RULyear = RULkm / (Mileage / Tire age)
     // -------------------------
-    const ageIndex = clamp(age / 5);
-
-    const CS =
-      0.35 * UF +
-      0.2 * ageIndex +
-      0.45 * damageIndex;
+    const RULyear = mileageYear > 0 ? RULkm / mileageYear : 0;
 
     // -------------------------
-    // 7. จำกัดอายุยาง
+    // 8. Max Age Constraint (จาก PDF)
+    // ไม่ควรใช้เกิน 5 ปี
+    // ถ้าคำนวณเกิน 5 ปี ให้ใช้: RULyear = 5 - age
     // -------------------------
-    const remainingYears = Math.max(0, 5 - age);
+    const MAX_TIRE_AGE = 5;
+    let finalRULyear;
+    let finalRULkm;
 
-    const finalRULkm = Math.min(
-      RULkm,
-      remainingYears * mileageYear
+    if (RULyear + age > MAX_TIRE_AGE) {
+      // เกินอายุสูงสุด → ตัดด้วยสูตร PDF: RULyear = 5 - age
+      finalRULyear = Math.max(0, MAX_TIRE_AGE - age);
+      finalRULkm = Math.round(finalRULyear * mileageYear);
+    } else {
+      finalRULyear = RULyear;
+      finalRULkm = Math.round(RULkm);
+    }
+
+    // -------------------------
+    // 9. Adjusted Wear Rate (ใช้แสดงผลเพิ่มเติม)
+    // รวม conditionPenalty สำหรับ display
+    // -------------------------
+    const adjustedWearRate =
+      WEAR_RATE_COEFFICIENT * UF * (1 + conditionPenalty);
+
+    // -------------------------
+    // 10. Component Score (CS)
+    // CS = 0.3 × Age Index + 0.4 × Wear Index + 0.3 × Condition Penalty
+    // -------------------------
+    const ageIndex = clamp(age / MAX_TIRE_AGE);
+    const wearIndex = clamp(
+      (treadStart - treadCurrent) / (treadStart - 1.6)
     );
-
-    const finalRULyear =
-      mileageYear > 0
-        ? finalRULkm / mileageYear
-        : 0;
+    const CS = 0.3 * ageIndex + 0.4 * wearIndex + 0.3 * conditionPenalty;
 
     // -------------------------
-    // 8. Risk
+    // 11. Risk Assessment
     // -------------------------
     let risk = "SAFE";
+    let riskColor = "green";
 
+    // Critical conditions → REPLACE NOW
     const isCriticalCondition =
+      treadCurrent <= 1.6 ||
+      age > MAX_TIRE_AGE ||
       rubberCondition === 2 ||
       crackLevel === 2 ||
       bulge === 1 ||
       damage === 2;
 
-    if (
-      treadCurrent <= 1.6 ||
-      age > 5 ||
-      isCriticalCondition
-    ) {
+    if (isCriticalCondition) {
       risk = "REPLACE NOW";
-    } else if (CS > 0.7) {
+      riskColor = "red";
+    } else if (CS > 0.7 || treadCurrent <= 3) {
       risk = "HIGH RISK";
-    } else if (CS >= 0.4) {
+      riskColor = "orange";
+    } else if (CS >= 0.4 || treadCurrent <= 4) {
       risk = "WARNING";
+      riskColor = "#FFB800";
     }
 
     // -------------------------
-    // 9. Result
+    // 12. Result Object
     // -------------------------
     setResult({
-      mileageYear,
-      UF,
-      WRbase,
-      WRadj,
-      RULkm,
-      RULyear,
+      // Input Data
+      mileage,
+      age,
+      treadCurrent,
+      treadStart,
+      mileageYear: parseFloat(mileageYear.toFixed(2)),
+
+      // Severity Factors
+      BS,
+      RS,
+      SS,
+      LS,
+      UF: parseFloat(UF.toFixed(4)),
+
+      // Condition
+      conditionPenalty: parseFloat(conditionPenalty.toFixed(3)),
+
+      // Wear Calculation
+      WEAR_RATE_COEFFICIENT,
+      predictedTread: parseFloat(predictedTread.toFixed(2)),
+      adjustedWearRate: parseFloat(adjustedWearRate.toExponential(3)),
+
+      // RUL (ตาม PDF)
+      treadRemaining: parseFloat(treadRemaining.toFixed(2)),
+      RULkm: parseFloat(RULkm.toFixed(0)),
+      RULyear: parseFloat(RULyear.toFixed(2)),
       finalRULkm,
-      finalRULyear,
-      CS,
+      finalRULyear: parseFloat(finalRULyear.toFixed(2)),
+      isAgeCapped: RULyear + age > MAX_TIRE_AGE, // บอกว่าถูก cap ด้วย age หรือเปล่า
+
+      // Scoring
+      ageIndex: parseFloat(ageIndex.toFixed(2)),
+      wearIndex: parseFloat(wearIndex.toFixed(2)),
+      CS: parseFloat(CS.toFixed(3)),
+
+      // Risk
       risk,
-      isCriticalCondition
+      riskColor,
+      isCriticalCondition,
     });
   };
 

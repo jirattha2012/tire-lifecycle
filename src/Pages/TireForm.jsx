@@ -130,7 +130,7 @@ export default function TireForm() {
 
             {/* ข้อมูลการใช้งาน */}
             <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> ข้อมูลการใช้งาน </span></Typography>}>
-                <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, }}>
                     {/* TreadCurrent */}
                     {/* <Box mb={2}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
@@ -149,14 +149,14 @@ export default function TireForm() {
                         />
                     </Box> */}
 
-                    <Box mb={2} sx={{pb: 2}}>
+                    {/* <Box mb={2} sx={{pb: 2}}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
                             ดอกยางเฉลี่ย (4 ล้อ): {form.treadCurrent} มม. (ปัจจุบัน)
                         </Typography>
-                    </Box>
+                    </Box> */}
 
                     {/* ล้อหน้าซ้าย */}
-                    <Box mb={2}>
+                    {/* <Box mb={2}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
                             ล้อหน้าซ้าย: {form.treadFrontLeft ?? 0} มม.
                         </Typography>
@@ -171,9 +171,9 @@ export default function TireForm() {
                             ]}
                             valueLabelDisplay="auto"
                         />
-                    </Box>
+                    </Box> */}
                     {/* ล้อหน้าขวา */}
-                    <Box mb={2}>
+                    {/* <Box mb={2}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
                             ล้อหน้าขวา: {form.treadFrontRight ?? 0} มม.
                         </Typography>
@@ -188,9 +188,9 @@ export default function TireForm() {
                             ]}
                             valueLabelDisplay="auto"
                         />
-                    </Box>
+                    </Box> */}
                     {/* ล้อหลังซ้าย */}
-                    <Box mb={2}>
+                    {/* <Box mb={2}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
                             ล้อหลังซ้าย: {form.treadBackLeft ?? 0} มม.
                         </Typography>
@@ -205,9 +205,9 @@ export default function TireForm() {
                             ]}
                             valueLabelDisplay="auto"
                         />
-                    </Box>
+                    </Box> */}
                     {/* ล้อหลังขวา */}
-                    <Box mb={2}>
+                    {/* <Box mb={2}>
                         <Typography variant="body2" color="text.secondary" mb={1}>
                             ล้อหลังขวา: {form.treadBackRight ?? 0} มม.
                         </Typography>
@@ -222,7 +222,7 @@ export default function TireForm() {
                             ]}
                             valueLabelDisplay="auto"
                         />
-                    </Box>
+                    </Box> */}
 
                     {/* <TextField
                         label="ระยะทางต่อปี"
@@ -239,7 +239,7 @@ export default function TireForm() {
                     /> */}
 
                     {/* MileageAccumulated */}
-                    <TextField
+                    {/* <TextField
                         label="ระยะทางสะสม (กม.)"
                         type="number"
                         value={form.mileage}
@@ -251,9 +251,30 @@ export default function TireForm() {
                         size="small"
                         fullWidth
                         sx={{ pb: 2 }}
+                    /> */}
+                    <TextField
+                        label="ระยะทางสะสม (กม.)"
+                        type="number"
+                        value={form.mileage}
+                        onChange={(e) => handleChange("mileage", e.target.value)}
+                        onBlur={() => handleBlur("mileage")}
+                        error={isError("mileage")}
+                        helperText={isError("mileage") ? "กรุณากรอกระยะทางสะสม (กม.)" : ""}
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        กม.
+                                    </InputAdornment>
+                                )
+                            }
+                        }}
+                        size="small"
+                        fullWidth
+                        sx={{ pb: 2 }}
                     />
 
-                    <TextField
+                    {/* <TextField
                         label="ระยะเวลาใช้งาน / อายุยาง (ปี)"
                         type="number"
                         value={form.age}
@@ -262,6 +283,27 @@ export default function TireForm() {
                         error={isError("age")}
                         helperText={isError("age") ? "กรุณากรอกระยะเวลาใช้งาน" : ""}
                         InputProps={{ endAdornment: <InputAdornment position="end"> ปี </InputAdornment> }}
+                        size="small"
+                        fullWidth
+                        sx={{ pb: 2 }}
+                    /> */}
+                    <TextField
+                        label="ระยะเวลาใช้งาน / อายุยาง (ปี)"
+                        type="number"
+                        value={form.age}
+                        onChange={(e) => handleChange("age", e.target.value)}
+                        onBlur={() => handleBlur("age")}
+                        error={isError("age")}
+                        helperText={isError("age") ? "กรุณากรอกระยะเวลาใช้งาน" : ""}
+                        slotProps={{
+                            input: {
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        ปี
+                                    </InputAdornment>
+                                )
+                            }
+                        }}
                         size="small"
                         fullWidth
                         sx={{ pb: 2 }}
@@ -312,24 +354,6 @@ export default function TireForm() {
                     คำนวณ
                 </Button>
             </Box>
-
-            {/* <div style={{ padding: '4px', width: '70vh', marginTop: '4vh', marginBottom: '2vh' }}>
-                <div style={{textAlign: 'left', color: 'red', fontSize: '16px'}}><u> สูตรคำนวณ </u></div>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>Mileage<span style={{fontSize: '12px'}}>year</span> = Mileage<span style={{fontSize: '12px'}}>acc</span> / Tireage </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>• MR = Mileage<span style={{fontSize: '12px'}}>year</span> / 30,000 </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>• SS = </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>• LS = </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>• α = 0.4 (Constant) </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>Age<span style={{fontSize: '12px'}}>Index</span>= TireAge / 5 </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>Damage<span style={{fontSize: '12px'}}>Index</span> = 1 – (Tread<span style={{fontSize: '12px'}}>Current</span> / Tread<span style={{fontSize: '12px'}}>Start</span>) </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>Component Score = (a₁UF) + (a₂Age<span style={{fontSize: '12px'}}>Index</span>) + (a₃Damage<span style={{fontSize: '12px'}}>Index</span>) </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>UF = (w₁·BS) + (w₂·RS) + (w₃·MR) + (w₄·SS) + (w5·LS) </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>WRbase = (TreadStart − TreadCurrent) / MileageAcc </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>WRadj = WRbase × (1 + αUF) </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>TreadRemaining = TreadCurrent − 1.6 mm </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>RULkm = TreadRemaining / WRadj </p>
-                <p style={{textAlign: 'left', color: 'red', fontSize: '16px'}}>RULyear = RULkm / Mileageyear </p>
-            </div> */}
         </Box>
     );
 }
