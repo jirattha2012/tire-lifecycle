@@ -205,7 +205,7 @@ export default function Result() {
                   {result.predictedTread} มม.
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  y = 8 − 0.00009 × {result.mileage.toLocaleString()}
+                  {/* y = 8 − 0.00009 × {result.mileage.toLocaleString()} */}
                 </Typography>
               </Box>
 
@@ -265,7 +265,7 @@ export default function Result() {
                 <Alert severity="warning" sx={{ mb: 2, py: 0.5 }}>
                   <Typography variant="caption">
                     ถูกจำกัดด้วยอายุยางสูงสุด 5 ปี
-                    (ใช้สูตร RULyear = 5 − {result.age} = {result.finalRULyear.toFixed(2)} ปี)
+                    {/* (ใช้สูตร RULyear = 5 − {result.age} = {result.finalRULyear.toFixed(2)} ปี) */}
                   </Typography>
                 </Alert>
               )}
@@ -277,10 +277,10 @@ export default function Result() {
                   RUL จากอัตราการสึก (ก่อน cap อายุ)
                 </Typography>
                 <Typography variant="body2" fontWeight="bold">
-                  {result.RULyear.toFixed(2)} ปี ({result.RULkm.toLocaleString()} กม.)
+                  {result.RULyear.toFixed(1)} ปี ({result.RULkm.toLocaleString()} กม.)
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  RULkm = ({result.treadCurrent} − 1.6) / (0.00009 × {result.UF.toFixed(2)})
+                  {/* RULkm = ({result.treadCurrent} − 1.6) / (0.00009 × {result.UF.toFixed(2)}) */}
                 </Typography>
               </Box>
             </CardContent>
@@ -341,9 +341,9 @@ export default function Result() {
           <Divider sx={{ my: 2 }} />
 
           <Box sx={{ p: 2, backgroundColor: "#fff9c4", borderRadius: 1 }}>
-            <Typography variant="body2" color="text.secondary">
+            {/* <Typography variant="body2" color="text.secondary">
               Usage Factor (UF) = 1 + BS + RS + SS + LS
-            </Typography>
+            </Typography> */}
             <Typography variant="h4" fontWeight="bold" color="warning.main">
               {result.UF.toFixed(4)}
             </Typography>
@@ -359,10 +359,10 @@ export default function Result() {
           </Typography>
 
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} size={{ xs: 6 }}>
               <Paper sx={{ p: 2, backgroundColor: "#f1f8e9" }}>
                 <Typography variant="body2" color="text.secondary">
-                  Base Wear Rate (จาก PDF)
+                  Base Wear Rate
                 </Typography>
                 <Typography variant="h6" fontWeight="bold">
                   {result.WEAR_RATE_COEFFICIENT}
@@ -372,10 +372,12 @@ export default function Result() {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            
+            <Grid item xs={12} sm={6} size={{ xs: 6 }}>
               <Paper sx={{ p: 2, backgroundColor: "#ede7f6" }}>
                 <Typography variant="body2" color="text.secondary">
-                  Adjusted Wear Rate (รวม UF + Condition)
+                  Adjusted Wear Rate 
+                  {/* (รวม UF + Condition) */}
                 </Typography>
                 <Typography variant="h6" fontWeight="bold">
                   {result.adjustedWearRate}
@@ -411,10 +413,11 @@ export default function Result() {
           </Typography>
 
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} size={{ xs: 6 }}>
               <Paper sx={{ p: 2, backgroundColor: "#fcf3d8" }}>
                 <Typography variant="body2" color="text.secondary">
-                  Age Index (อายุ) × 0.3
+                  Age Index (อายุ) 
+                  {/* × 0.3 */}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
                   <LinearProgress
@@ -428,10 +431,12 @@ export default function Result() {
                 </Box>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6}>
+
+            <Grid item xs={12} sm={6} size={{ xs: 6 }}>
               <Paper sx={{ p: 2, backgroundColor: "#e8d5f2" }}>
                 <Typography variant="body2" color="text.secondary">
-                  Wear Index (การสึก) × 0.4
+                  Wear Index (การสึก) 
+                  {/* × 0.4 */}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
                   <LinearProgress
@@ -458,7 +463,7 @@ export default function Result() {
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              CS = 0.3 × Age Index + 0.4 × Wear Index + 0.3 × Condition Penalty
+              {/* CS = 0.3 × Age Index + 0.4 × Wear Index + 0.3 × Condition Penalty */}
             </Typography>
             <Typography
               variant="h3"
