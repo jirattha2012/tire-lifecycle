@@ -94,7 +94,7 @@ export default function Result() {
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
               <Typography variant="body2" color="text.secondary">
-                ดอกยางปัจจุบัน
+                ดอกยางเริ่มต้น
               </Typography>
               <Typography variant="h6" fontWeight="bold">
                 {result.treadCurrent} มม.
@@ -117,7 +117,7 @@ export default function Result() {
         sx={{
           mb: 3,
           backgroundColor:
-            result.risk === "REPLACE NOW"
+            result.risk === "UNSAFE"
               ? "#ffebee"
               : result.risk === "HIGH RISK"
               ? "#fff3e0"
@@ -491,7 +491,7 @@ export default function Result() {
         sx={{
           mb: 4,
           backgroundColor:
-            result.risk === "REPLACE NOW"
+            result.risk === "UNSAFE"
               ? "#ffcdd2"
               : result.risk === "HIGH RISK"
               ? "#ffe0b2"
@@ -505,10 +505,10 @@ export default function Result() {
           <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
             💡 คำแนะนำ
           </Typography>
-          {result.risk === "REPLACE NOW" && (
+          {result.risk === "UNSAFE" && (
             <Typography variant="body2">
-              ⚠️ <strong>ต้องเปลี่ยนยางทันที!</strong> ดอกยางไม่เหลือ หรือยางมีอายุ
-              เกิน 5 ปี หรือมีความเสียหายวิกฤต
+              ⚠️ <strong>ไม่ปลอดภัย!</strong> ควรเปลี่ยนยางทันที
+              เนื่องจากพบความเสียหายรุนแรง หรือยางหมดสภาพ
             </Typography>
           )}
           {result.risk === "HIGH RISK" && (

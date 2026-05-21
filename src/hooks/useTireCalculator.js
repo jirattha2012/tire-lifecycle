@@ -137,6 +137,36 @@ export const useTireCalculator = () => {
     let risk = "SAFE";
     let riskColor = "green";
 
+    // ⚠️ Warning Conditions
+    const hasWarningCondition =
+      rubberCondition === 1 || // เริ่มแข็ง
+      crackLevel === 1 ||      // มีเล็กน้อย
+      damage === 1;            // มีรอยตื้น
+
+    // 🚨 Unsafe Conditions
+    const hasUnsafeCondition =
+      treadCurrent <= 1.6 ||
+      age > MAX_TIRE_AGE ||
+      rubberCondition === 2 || // แข็ง/ตาย
+      crackLevel === 2 ||      // แตกชัดเจน
+      bulge === 1 ||           // พบรอยบวม
+      damage === 2;            // แผลลึก/เห็นโครงสร้าง
+
+    if (hasUnsafeCondition) {
+      risk = "UNSAFE";
+      riskColor = "red";
+    } else if (
+      hasWarningCondition ||
+      CS >= 0.4 ||
+      treadCurrent <= 4
+    ) {
+      risk = "WARNING";
+      riskColor = "#FFB800";
+    } else {
+      risk = "SAFE";
+      riskColor = "green";
+    }
+
     // Critical conditions → REPLACE NOW
     const isCriticalCondition =
       treadCurrent <= 1.6 ||
@@ -199,7 +229,9 @@ export const useTireCalculator = () => {
       // Risk
       risk,
       riskColor,
-      isCriticalCondition,
+      // isCriticalCondition,
+      hasUnsafeCondition,
+      hasWarningCondition,
     });
   };
 
