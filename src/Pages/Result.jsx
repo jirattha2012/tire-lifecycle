@@ -168,7 +168,7 @@ export default function Result() {
                 <Box
                   sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
                 >
-                  <Typography variant="body2">ดอกยางปัจจุบัน</Typography>
+                  <Typography variant="body2">ดอกยางเริ่มต้น</Typography>
                   <Typography variant="body2" fontWeight="bold">
                     {result.treadCurrent} มม.
                   </Typography>
