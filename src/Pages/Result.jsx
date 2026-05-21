@@ -235,7 +235,7 @@ export default function Result() {
                 >
                   <Typography variant="body2">ประมาณ</Typography>
                   <Typography variant="h6" fontWeight="bold" color="primary">
-                    {result.finalRULyear.toFixed(2)} ปี
+                    {result.finalRULyear.toFixed(1)} ปี
                   </Typography>
                 </Box>
                 <LinearProgress
@@ -265,7 +265,7 @@ export default function Result() {
                 <Alert severity="warning" sx={{ mb: 2, py: 0.5 }}>
                   <Typography variant="caption">
                     ถูกจำกัดด้วยอายุยางสูงสุด 5 ปี
-                    {/* (ใช้สูตร RULyear = 5 − {result.age} = {result.finalRULyear.toFixed(2)} ปี) */}
+                    {/* (ใช้สูตร RULyear = 5 − {result.age} = {result.finalRULyear.toFixed(1)} ปี) */}
                   </Typography>
                 </Alert>
               )}
@@ -280,7 +280,7 @@ export default function Result() {
                   {result.RULyear.toFixed(1)} ปี ({result.RULkm.toLocaleString()} กม.)
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {/* RULkm = ({result.treadCurrent} − 1.6) / (0.00009 × {result.UF.toFixed(2)}) */}
+                  {/* RULkm = ({result.treadCurrent} − 1.6) / (0.00009 × {result.UF.toFixed(1)}) */}
                 </Typography>
               </Box>
             </CardContent>
@@ -426,7 +426,7 @@ export default function Result() {
                     sx={{ flex: 1, height: 8, borderRadius: 4 }}
                   />
                   <Typography variant="body2" fontWeight="bold">
-                    {result.ageIndex.toFixed(2)}
+                    {result.ageIndex.toFixed(1)}
                   </Typography>
                 </Box>
               </Paper>
@@ -445,7 +445,7 @@ export default function Result() {
                     sx={{ flex: 1, height: 8, borderRadius: 4 }}
                   />
                   <Typography variant="body2" fontWeight="bold">
-                    {result.wearIndex.toFixed(2)}
+                    {result.wearIndex.toFixed(1)}
                   </Typography>
                 </Box>
               </Paper>
