@@ -143,10 +143,12 @@ export const useTireCalculator = () => {
       crackLevel === 1 ||      // มีเล็กน้อย
       damage === 1;            // มีรอยตื้น
 
-    // 🚨 Unsafe Conditions
+    // 🚨 Unsafe Conditions (รวมถึง mileage > 80,000 km หรือ age > 5 ปี)
+    const MAX_MILEAGE = 80000; // กม.
     const hasUnsafeCondition =
       treadCurrent <= 1.6 ||
       age > MAX_TIRE_AGE ||
+      mileage > MAX_MILEAGE ||  // เพิ่มเงื่อนไข: ระยะทาง > 80,000 km
       rubberCondition === 2 || // แข็ง/ตาย
       crackLevel === 2 ||      // แตกชัดเจน
       bulge === 1 ||           // พบรอยบวม
@@ -167,10 +169,11 @@ export const useTireCalculator = () => {
       riskColor = "green";
     }
 
-    // Critical conditions → REPLACE NOW
+    // Critical conditions → REPLACE NOW (รวมถึง mileage > 80,000 km หรือ age > 5 ปี)
     const isCriticalCondition =
       treadCurrent <= 1.6 ||
       age > MAX_TIRE_AGE ||
+      mileage > MAX_MILEAGE ||  // เพิ่มเงื่อนไข: ระยะทาง > 80,000 km
       rubberCondition === 2 ||
       crackLevel === 2 ||
       bulge === 1 ||

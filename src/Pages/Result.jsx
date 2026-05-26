@@ -16,6 +16,9 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+import th from "../locales/th.json";
+import en from "../locales/en.json";
+
 export default function Result() {
   const [data, setData] = useState(null);
   const { result, calculate } = useTireCalculator();
@@ -32,10 +35,17 @@ export default function Result() {
     }
   }, []);
 
+  const [language, setLanguage] = useState(
+    localStorage.getItem("language") || "th"
+  );
+  const translations = { th, en };
+  const t = translations[language];
+
+
   if (!data || !result) {
     return (
       <Box sx={{ p: 3, textAlign: "center" }}>
-        <Typography>กำลังโหลด...</Typography>
+        <Typography> {t.result.loading} </Typography>
       </Box>
     );
   }
@@ -62,10 +72,10 @@ export default function Result() {
       {/* Header */}
       <Box sx={{ mb: 4, textAlign: "center" }}>
         <Typography variant="h4" fontWeight="bold" sx={{ mb: 1 }}>
-          📊 ผลการประเมินอายุการใช้งานยาง
+          📊 {t.resulttitle}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          วิเคราะห์จากข้อมูลที่คุณกรอก
+          {t.result.subtitle}
         </Typography>
       </Box>
 
@@ -73,39 +83,39 @@ export default function Result() {
       <Card sx={{ mb: 3, backgroundColor: "#f5f5f5" }}>
         <CardContent>
           <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-            📝 ข้อมูลที่ใช้คำนวณ
+            📝 {t.result.inputSummary}
           </Typography>
           <Grid container spacing={2}>
             <Grid size={{ xs: 6, sm: 3 }}>
               <Typography variant="body2" color="text.secondary">
-                ระยะทางสะสม
+                {t.result.mileage}
               </Typography>
               <Typography variant="h6" fontWeight="bold">
-                {result.mileage.toLocaleString()} กม.
+                {result.mileage.toLocaleString()} {t.km}
               </Typography>
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
               <Typography variant="body2" color="text.secondary">
-                อายุยาง
+                {t.result.tireAge}
               </Typography>
               <Typography variant="h6" fontWeight="bold">
-                {result.age} ปี
+                {result.age} {t.year}
               </Typography>
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
               <Typography variant="body2" color="text.secondary">
-                ดอกยางเริ่มต้น
+                {t.result.initialTread}
               </Typography>
               <Typography variant="h6" fontWeight="bold">
-                {result.treadCurrent} มม.
+                {result.treadCurrent} {t.mm}
               </Typography>
             </Grid>
             <Grid size={{ xs: 6, sm: 3 }}>
               <Typography variant="body2" color="text.secondary">
-                ระยะทาง/ปี
+                {t.result.mileagePerYear}
               </Typography>
               <Typography variant="h6" fontWeight="bold">
-                {result.mileageYear.toLocaleString()} กม./ปี
+                {result.mileageYear.toLocaleString()} {t.result.kmPerYear}
               </Typography>
             </Grid>
           </Grid>
@@ -131,7 +141,7 @@ export default function Result() {
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Box>
               <Typography variant="body2" color="text.secondary">
-                สถานะความเสี่ยง
+                {t.result.riskStatus}
               </Typography>
               <Typography
                 variant="h5"
@@ -161,16 +171,16 @@ export default function Result() {
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                🔍 สถานะดอกยาง
+                🔍 {t.result.treadStatus}
               </Typography>
 
               <Box sx={{ mb: 2 }}>
                 <Box
                   sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
                 >
-                  <Typography variant="body2">ดอกยางเริ่มต้น</Typography>
+                  <Typography variant="body2"> {t.result.initialTread} </Typography>
                   <Typography variant="body2" fontWeight="bold">
-                    {result.treadCurrent} มม.
+                    {result.treadCurrent} {t.mm}
                   </Typography>
                 </Box>
                 <LinearProgress
@@ -191,7 +201,7 @@ export default function Result() {
                   }}
                 />
                 <Typography variant="caption" color="text.secondary">
-                  ต่ำสุด: 1.6 มม. | เริ่มต้น: {result.treadStart} มม.
+                  {t.result.minimum}: 1.6 {t.mm} | {t.result.initial}: {result.treadStart} {t.mm}
                 </Typography>
               </Box>
 
@@ -199,10 +209,10 @@ export default function Result() {
 
               <Box sx={{ mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
-                  ดอกยางตามการคาดการณ์ (Linear Model)
+                  {t.result.estimatedTread} (Linear Model)
                 </Typography>
                 <Typography variant="body2" fontWeight="bold">
-                  {result.predictedTread} มม.
+                  {result.predictedTread} {t.mm}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   {/* y = 8 − 0.00009 × {result.mileage.toLocaleString()} */}
@@ -211,10 +221,10 @@ export default function Result() {
 
               <Box sx={{ mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
-                  ดอกยางเหลือ (ก่อนถึงจุดต้องเปลี่ยน 1.6 มม.)
+                  {t.result.remainingTread}
                 </Typography>
                 <Typography variant="body2" fontWeight="bold">
-                  {result.treadRemaining} มม.
+                  {result.treadRemaining} {t.mm}
                 </Typography>
               </Box>
             </CardContent>
@@ -226,16 +236,16 @@ export default function Result() {
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                ⏱️ อายุการใช้งานที่เหลือ (RUL)
+                ⏱️ {t.result.rul} (RUL)
               </Typography>
 
               <Box sx={{ mb: 2 }}>
                 <Box
                   sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
                 >
-                  <Typography variant="body2">ประมาณ</Typography>
+                  <Typography variant="body2"> {t.result.estimated} </Typography>
                   <Typography variant="h6" fontWeight="bold" color="primary">
-                    {result.finalRULyear.toFixed(1)} ปี
+                    {result.finalRULyear.toFixed(1)} {t.year}
                   </Typography>
                 </Box>
                 <LinearProgress
@@ -256,7 +266,7 @@ export default function Result() {
                   }}
                 />
                 <Typography variant="caption" color="text.secondary">
-                  หรือ {result.finalRULkm.toLocaleString()} กม.
+                  {t.and} {result.finalRULkm.toLocaleString()} {t.km}
                 </Typography>
               </Box>
 
@@ -264,7 +274,7 @@ export default function Result() {
               {result.isAgeCapped && (
                 <Alert severity="warning" sx={{ mb: 2, py: 0.5 }}>
                   <Typography variant="caption">
-                    ถูกจำกัดด้วยอายุยางสูงสุด 5 ปี
+                    {t.result.maxAgeLimit}
                     {/* (ใช้สูตร RULyear = 5 − {result.age} = {result.finalRULyear.toFixed(1)} ปี) */}
                   </Typography>
                 </Alert>
@@ -274,10 +284,10 @@ export default function Result() {
 
               <Box sx={{ mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
-                  RUL จากอัตราการสึก (ก่อน cap อายุ)
+                  {t.result.rulFromWear}
                 </Typography>
                 <Typography variant="body2" fontWeight="bold">
-                  {result.RULyear.toFixed(1)} ปี ({result.RULkm.toLocaleString()} กม.)
+                  {result.RULyear.toFixed(1)} {t.year} ({result.RULkm.toLocaleString()} {t.km})
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   {/* RULkm = ({result.treadCurrent} − 1.6) / (0.00009 × {result.UF.toFixed(1)}) */}
@@ -292,14 +302,14 @@ export default function Result() {
       <Card sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-            🎯 ปัจจัยการใช้งาน (Severity Factors)
+            🎯 {t.result.usageFactors}
           </Typography>
 
           <Grid container spacing={2}>
             <Grid size={{ xs: 6, sm: 3 }}>
               <Paper sx={{ p: 2, backgroundColor: "#e3f2fd", textAlign: "center" }}>
                 <Typography variant="body2" color="text.secondary">
-                  BS (เบรก)
+                  BS ({t.result.break})
                 </Typography>
                 <Typography variant="h5" fontWeight="bold">
                   {result.BS}
@@ -309,7 +319,7 @@ export default function Result() {
             <Grid size={{ xs: 6, sm: 3 }}>
               <Paper sx={{ p: 2, backgroundColor: "#f3e5f5", textAlign: "center" }}>
                 <Typography variant="body2" color="text.secondary">
-                  RS (ถนน)
+                  RS ({t.result.road})
                 </Typography>
                 <Typography variant="h5" fontWeight="bold">
                   {result.RS}
@@ -319,7 +329,7 @@ export default function Result() {
             <Grid size={{ xs: 6, sm: 3 }}>
               <Paper sx={{ p: 2, backgroundColor: "#e0f2f1", textAlign: "center" }}>
                 <Typography variant="body2" color="text.secondary">
-                  SS (ความเร็ว)
+                  SS ({t.result.speed})
                 </Typography>
                 <Typography variant="h5" fontWeight="bold">
                   {result.SS}
@@ -329,7 +339,7 @@ export default function Result() {
             <Grid size={{ xs: 6, sm: 3 }}>
               <Paper sx={{ p: 2, backgroundColor: "#fce4ec", textAlign: "center" }}>
                 <Typography variant="body2" color="text.secondary">
-                  LS (การบรรทุก)
+                  LS ({t.result.load})
                 </Typography>
                 <Typography variant="h5" fontWeight="bold">
                   {result.LS}
@@ -355,7 +365,7 @@ export default function Result() {
       <Card sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-            📉 การคำนวณอัตราการสึก
+            📉 {t.result.wearCalculation}
           </Typography>
 
           <Grid container spacing={2}>
@@ -368,7 +378,7 @@ export default function Result() {
                   {result.WEAR_RATE_COEFFICIENT}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  มม./กม. (r = 0.8999)
+                  {t.result.mmPerkm} (r = 0.8999)
                 </Typography>
               </Paper>
             </Grid>
@@ -383,7 +393,7 @@ export default function Result() {
                   {result.adjustedWearRate}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  ใช้สำหรับ display เท่านั้น
+                  {t.result.displayOnly}
                 </Typography>
               </Paper>
             </Grid>
@@ -393,13 +403,13 @@ export default function Result() {
 
           <Box>
             <Typography variant="body2" color="text.secondary">
-              Condition Penalty (ความเสียหาย)
+              {t.result.conditionPenalty}
             </Typography>
             <Typography variant="h5" fontWeight="bold">
               {(result.conditionPenalty * 100).toFixed(1)}%
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              สะสมจาก: ยางแข็ง / รอยแตก / บวม / บาด
+              {t.result.conditionPenaltyDesc}
             </Typography>
           </Box>
         </CardContent>
@@ -409,14 +419,14 @@ export default function Result() {
       <Card sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-            📊 คะแนนประเมิน (Component Score)
+            📊 {t.result.componentScore}
           </Typography>
 
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6} size={{ xs: 6 }}>
               <Paper sx={{ p: 2, backgroundColor: "#fcf3d8" }}>
                 <Typography variant="body2" color="text.secondary">
-                  Age Index (อายุ) 
+                  {t.result.ageIndex}
                   {/* × 0.3 */}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
@@ -435,7 +445,7 @@ export default function Result() {
             <Grid item xs={12} sm={6} size={{ xs: 6 }}>
               <Paper sx={{ p: 2, backgroundColor: "#e8d5f2" }}>
                 <Typography variant="body2" color="text.secondary">
-                  Wear Index (การสึก) 
+                  {t.result.wearIndex}
                   {/* × 0.4 */}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
@@ -507,24 +517,23 @@ export default function Result() {
           </Typography>
           {result.risk === "UNSAFE" && (
             <Typography variant="body2">
-              ⚠️ <strong>ไม่ปลอดภัย!</strong> ควรเปลี่ยนยางทันที
-              เนื่องจากพบความเสียหายรุนแรง หรือยางหมดสภาพ
+              ⚠️ {t.result.unsafeMessage}
             </Typography>
           )}
           {result.risk === "HIGH RISK" && (
             <Typography variant="body2">
-              ⚠️ <strong>เตือน!</strong> ยางอยู่ในสภาพเสี่ยงสูง ควรจัดการเปลี่ยนในเร็วๆ นี้
+              ⚠️ {t.result.highRiskMessage}
             </Typography>
           )}
           {result.risk === "WARNING" && (
             <Typography variant="body2">
-              ⚠️ <strong>ตั้งสติ!</strong> ยางควรเข้าการบำรุงรักษา และเตรียมตัวเปลี่ยนในอีกไม่นาน
+              ⚠️ {t.result.warningMessage}
             </Typography>
           )}
           {result.risk === "SAFE" && (
             <Typography variant="body2">
-              ✅ <strong>ปลอดภัย!</strong> ยางยังสามารถใช้ได้ มีอายุการใช้งานเหลือประมาณ{" "}
-              {result.finalRULyear.toFixed(1)} ปี
+              ✅ {t.result.safeMessage}{" "}
+              {result.finalRULyear.toFixed(1)} {t.year}
             </Typography>
           )}
         </CardContent>
@@ -533,10 +542,10 @@ export default function Result() {
       {/* Action Buttons */}
       <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
         <Button variant="outlined" fullWidth onClick={() => navigate("/")}>
-          กรอกข้อมูลใหม่
+          {t.result.refill}
         </Button>
         <Button variant="contained" fullWidth onClick={() => window.print()}>
-          พิมพ์ผลลัพธ์
+          {t.result.print}
         </Button>
       </Stack>
     </Box>

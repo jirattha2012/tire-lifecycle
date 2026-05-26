@@ -7,6 +7,10 @@ import {
 } from "@mui/material";
 import SectionCard from '../components/SectionCard'
 import ChipField from '../components/ChipField'
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+
+import th from "../locales/th.json";
+import en from "../locales/en.json";
 
 // Mock Data
 const chipOptions = {
@@ -116,20 +120,83 @@ export default function TireForm() {
         form.treadBackRight
     ]);
 
+    // เปลี่ยนภาษา
+    // const [language, setLanguage] = useState("th");
+    const [language, setLanguage] = useState(
+        localStorage.getItem("language") || "th"
+    );
+    const translations = {
+        th,
+        en
+    };
+    const t = translations[language];
+
+    const handleLanguageChange = (lang) => {
+        setLanguage(lang);
+        localStorage.setItem("language", lang);
+    };
+
 
     return (
         <Box maxWidth={600} mx="auto" p={3}>
+            <Box display="flex" justifyContent="flex-end" mb={2}>
+                <Paper
+                    elevation={0}
+                    sx={{
+                        borderRadius: "999px",
+                        p: 0.5,
+                        bgcolor: "#f3f4f6",
+                    }}
+                >
+                    <ToggleButtonGroup
+                        exclusive
+                        value={language}
+                        onChange={(_, value) => {
+                            if (value !== null) {
+                                handleLanguageChange(value);
+                            }
+                        }}
+                        sx={{
+                            "& .MuiToggleButton-root": {
+                                border: 0,
+                                borderRadius: "999px !important",
+                                px: 2,
+                                py: 0.5,
+                                textTransform: "none",
+                                fontWeight: 600,
+                                color: "#555",
+                                transition: "all .2s ease",
+                            },
+
+                            "& .Mui-selected": {
+                                bgcolor: "#1976d2 !important",
+                                color: "#fff !important",
+                                boxShadow: "0 2px 8px rgba(25,118,210,.25)",
+                            },
+                        }}
+                    >
+                        <ToggleButton value="th" sx={{mr: '5px'}}>
+                            🇹🇭 ไทย
+                        </ToggleButton>
+
+                        <ToggleButton value="en">
+                            🇺🇸 EN
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                </Paper>
+            </Box>
+
             <Box mb={3}>
                 <Typography variant="h6" fontWeight={500}>
-                    ระบบประเมินอายุการใช้งานยาง 𖥕
+                    {t.title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    กรอกข้อมูลให้ครบเพื่อคำนวณระยะเวลาที่เหลือของยาง  
+                    {t.subtitle}  
                 </Typography>
             </Box>
 
             {/* ข้อมูลการใช้งาน */}
-            <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> ข้อมูลการใช้งาน </span></Typography>}>
+            <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> {t.usageInfo} </span></Typography>}>
                 <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, }}>
                     {/* TreadCurrent */}
                     {/* <Box mb={2}>
@@ -253,18 +320,18 @@ export default function TireForm() {
                         sx={{ pb: 2 }}
                     /> */}
                     <TextField
-                        label="ระยะทางสะสม (กม.)"
+                        label={t.mileage}
                         type="number"
                         value={form.mileage}
                         onChange={(e) => handleChange("mileage", e.target.value)}
                         onBlur={() => handleBlur("mileage")}
                         error={isError("mileage")}
-                        helperText={isError("mileage") ? "กรุณากรอกระยะทางสะสม (กม.)" : ""}
+                        helperText={isError("mileage") ? t.requiredMileage : ""}
                         slotProps={{
                             input: {
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        กม.
+                                        {t.km}
                                     </InputAdornment>
                                 )
                             }
@@ -288,18 +355,18 @@ export default function TireForm() {
                         sx={{ pb: 2 }}
                     /> */}
                     <TextField
-                        label="ระยะเวลาใช้งาน / อายุยาง (ปี)"
+                        label={t.age}
                         type="number"
                         value={form.age}
                         onChange={(e) => handleChange("age", e.target.value)}
                         onBlur={() => handleBlur("age")}
                         error={isError("age")}
-                        helperText={isError("age") ? "กรุณากรอกระยะเวลาใช้งาน" : ""}
+                        helperText={isError("age") ? t.requiredAge : ""}
                         slotProps={{
                             input: {
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        ปี
+                                        {t.year}
                                     </InputAdornment>
                                 )
                             }
@@ -312,19 +379,19 @@ export default function TireForm() {
             </SectionCard>
 
             {/* สภาพยาง */}
-            <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> ความเสียหาย / สภาพยาง </span></Typography>}>
-                <ChipField label="สภาพเนื้อยาง" field="rubberCondition" options={chipOptions.rubberCondition} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
-                <ChipField label="รอยแตกลายงา" field="crackLevel" options={chipOptions.crackLevel} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
-                <ChipField label="การบวม/พอง" field="bulge" options={chipOptions.bulge} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
-                <ChipField label="บาด/ตำ/ฉีก/ขาด" field="damage" options={chipOptions.damage} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+            <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> {t.tireCondition} </span></Typography>}>
+                <ChipField label={t.rubberCondition} field="rubberCondition" options={t.options.rubberCondition} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label={t.crackLevel} field="crackLevel" options={t.options.crackLevel} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label={t.bulge} field="bulge" options={t.options.bulge} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label={t.damage} field="damage" options={t.options.damage} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
             </SectionCard>
 
             {/* ปัจจัยการใช้งาน */}
-            <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}>ปัจจัยการใช้งาน</span></Typography>}>
-                <ChipField label="พฤติกรรมการเบรค" field="braking" options={chipOptions.braking} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
-                <ChipField label="สภาพถนน" field="road" options={chipOptions.road} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
-                <ChipField label="ความเร็วเฉลี่ย (กม./ชม.)" field="speed" options={chipOptions.speed} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
-                <ChipField label="การบรรทุก" field="load" options={chipOptions.load} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+            <SectionCard title={<Typography fontSize={20}><span style={{fontWeight: 'bold'}}> {t.usageFactor} </span></Typography>}>
+                <ChipField label={t.braking} field="braking" options={t.options.braking} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label={t.road} field="road" options={t.options.road} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label={t.speed} field="speed" options={t.options.speed} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
+                <ChipField label={t.load} field="load" options={t.options.load} form={form} handleChange={handleChange} sx={{ mt: 2 }} />
             </SectionCard>
 
             <Box display="flex" gap={4} width="100%" sx={{ mb: 4 }}>
@@ -347,11 +414,11 @@ export default function TireForm() {
                         kmPerYear: "" 
                     })}
                 >
-                    ล้างข้อมูล
+                    {t.clear}
                 </Button>
             
                 <Button variant="contained" sx={{ width: '18vh', borderRadius: '8px' }} onClick={handleSubmit} disableElevation>
-                    คำนวณ
+                    {t.calculate}
                 </Button>
             </Box>
         </Box>

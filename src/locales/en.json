@@ -1,0 +1,139 @@
+{
+    "title": "Tire Lifetime Evaluation System",
+    "subtitle": "Fill in the information to calculate the remaining tire lifespan",
+
+    "usageInfo": "Usage Information",
+    "tireCondition": "Damage / Tire Condition",
+    "usageFactor": "Usage Factors",
+
+    "mileage": "Mileage (km)",
+    "age": "Tire Age (years)",
+
+    "requiredMileage": "Please enter mileage",
+    "requiredAge": "Please enter tire age",
+
+    "clear": "Clear",
+    "calculate": "Calculate",
+
+    "km": "km",
+    "year": "years",
+    "mm": "mm",
+
+    "rubberCondition": "Rubber Condition",
+    "crackLevel": "Crack Level",
+    "bulge": "Bulge",
+    "damage": "Damage",
+
+    "braking": "Braking Behavior",
+    "road": "Road Condition",
+    "speed": "Average Speed (km/h)",
+    "load": "Load",
+
+    "options": {
+        "rubberCondition": [
+        "Soft / Flexible",
+        "Starting to Harden",
+        "Hard / Dead Rubber"
+        ],
+
+        "crackLevel": [
+        "None",
+        "Minor Cracks",
+        "Severe Cracks"
+        ],
+
+        "bulge": [
+        "None",
+        "Bulge Detected"
+        ],
+
+        "damage": [
+        "None",
+        "Minor Damage",
+        "Deep Damage / Structure Visible"
+        ],
+
+        "braking": [
+        "Smooth / Gentle Braking",
+        "Hard / Sudden Braking Frequently"
+        ],
+
+        "road": [
+        "Smooth Road",
+        "Rough / Dusty Road",
+        "Road Full of Potholes"
+        ],
+
+        "speed": [
+        "Low (<60)",
+        "Medium (80-100)",
+        "High (>120)"
+        ],
+
+        "load": [
+        "Less than 400-500 kg",
+        "More than 500 kg"
+        ]
+    },
+
+    "result": {
+        "loading": "Loading...",
+
+        "title": "Tire Lifetime Evaluation Result",
+        "subtitle": "Analysis based on your provided information",
+
+        "inputSummary": "Calculation Summary",
+
+        "mileage": "Mileage",
+        "tireAge": "Tire Age",
+        "initialTread": "Initial Tread",
+        "mileagePerYear": "Mileage / Year",
+
+        "riskStatus": "Risk Status",
+
+        "treadStatus": "Tread Status",
+        "estimatedTread": "Predicted Tread (Linear Model)",
+        "remainingTread": "Remaining Tread (before 1.6 mm limit)",
+
+        "rul": "Remaining Useful Life (RUL)",
+        "estimated": "Estimated",
+        "maxAgeLimit": "Limited by maximum tire age of 5 years",
+        "rulFromWear": "RUL from Wear Rate (before age cap)",
+
+        "usageFactors": "Usage Factors (Severity Factors)",
+
+        "wearCalculation": "Wear Rate Calculation",
+        "baseWearRate": "Base Wear Rate",
+        "adjustedWearRate": "Adjusted Wear Rate",
+        "displayOnly": "For display purposes only",
+
+        "conditionPenalty": "Condition Penalty (Damage)",
+        "conditionPenaltyDesc": "Accumulated from: hard rubber / cracks / bulges / cuts",
+
+        "componentScore": "Component Score",
+        "ageIndex": "Age Index",
+        "wearIndex": "Wear Index",
+
+        "recommendation": "Recommendation",
+
+        "unsafeMessage": "Unsafe! Replace the tire immediately due to severe damage or tire degradation.",
+        "highRiskMessage": "Warning! The tire is in high-risk condition and should be replaced soon.",
+        "warningMessage": "Caution! The tire should receive maintenance and prepare for replacement soon.",
+        "safeMessage": "Safe! The tire can still be used with approximately",
+
+        "refill": "Fill Again",
+        "print": "Print Result",
+
+        "kmPerYear": "km / year",
+        "minimum": "minimum",
+        "initial": "initial",
+        "and": "and",
+        "break": "break",
+        "road": "road",
+        "speed": "speed",
+        "load": "load",
+        "mmPerkm": "mm./km."
+    }
+
+
+}
