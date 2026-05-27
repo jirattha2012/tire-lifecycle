@@ -513,7 +513,7 @@ export default function Result() {
       >
         <CardContent>
           <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
-            💡 คำแนะนำ
+            💡 {t.result.recommendation}
           </Typography>
           {result.risk === "UNSAFE" && (
             <Typography variant="body2">
